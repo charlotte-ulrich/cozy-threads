@@ -1,142 +1,71 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import {
+  PaymentElement,
+  LinkAuthenticationElement,
+} from '@stripe/react-stripe-js';
+import { useState } from 'react';
+import { useStripe, useElements } from '@stripe/react-stripe-js';
 
-class CheckoutForm extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      firstName: '',
-      lastName: '',
-      address: '',
-      phoneNumber: '',
-      email: '',
-      year: '',
-    };
-    this.handleChange = this.handleChange.bind(this);
-  }
+const CheckoutForm = () => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [message, setMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  componentDidMount() {}
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  handleChange(evt) {
-    this.setState({
-      [evt.target.name]: evt.target.value,
+    if (!stripe || !elements) {
+      // Stripe.js has not yet loaded.
+      // Make sure to disable form submission until Stripe.js has loaded.
+      return;
+    }
+
+    setIsLoading(true);
+
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        // Make sure to change this to your payment completion page
+        return_url: `${window.location.origin}/completion`,
+      },
     });
-  }
 
-  render() {
-    return (
-      <div className="checkout" id="checkout-input">
-        <div className="checkout-content">
-          <h3>Let's Checkout</h3>
-          <form onSubmit={this.handleSubmit}>
-            <div className="input-title">
-              <label htmlFor="firstName">
-                <small>First Name</small>
-              </label>
-              <input
-                name="firstName"
-                value={this.state.name}
-                placeholder="Given Name"
-              />
-            </div>
-            <div className="input-title">
-              <label htmlFor="lastName">
-                <small>Last Name</small>
-              </label>
-              <input
-                name="lastName"
-                value={this.state.name}
-                placeholder="Surname"
-              />
-            </div>
-            <div className="input-title">
-              <label htmlFor="address">
-                <small>Address</small>
-              </label>
-              <input
-                name="address"
-                value={this.state.name}
-                placeholder="Address"
-              />
-            </div>
-            <div className="input-title">
-              <label htmlFor="phoneNumber">
-                <small>Phone Number</small>
-              </label>
-              <input
-                name="phoneNumber"
-                value={this.state.name}
-                placeholder="Phone Number"
-              />
-            </div>
-            <div className="input-title">
-              <label htmlFor="email">
-                <small>Email</small>
-              </label>
-              <input name="email" value={this.state.name} placeholder="Email" />
-            </div>
-            <div className="input-title">
-              <label htmlFor="creditCard">
-                <small>Credit Card</small>
-              </label>
-              <input
-                name="creditCard"
-                value={this.state.name}
-                placeholder="Credit Card"
-              />
-            </div>
-            <div>
-              <div className="input-title">
-                <label htmlFor="expiration">
-                  <small>Expiration</small>
-                </label>
-                <select className="select-expiration">
-                  <option value="1">January</option>
-                  <option value="2">February</option>
-                  <option value="3">March</option>
-                  <option value="4">April</option>
-                  <option value="5">May</option>
-                  <option value="6">June</option>
-                  <option value="7">July</option>
-                  <option value="8">August</option>
-                  <option value="9">September</option>
-                  <option value="10">October</option>
-                  <option value="11">November</option>
-                  <option value="12">December</option>
-                </select>
-                <input
-                  className="expiration-year"
-                  name="year"
-                  value={this.state.name}
-                  placeholder="Year"
-                />
-              </div>
-            </div>
-            <div>
-              <Link to="/confirmation-page">
-                <button className="checkout-cta" type="button">
-                  Submit
-                </button>
-              </Link>
-            </div>
-          </form>
-        </div>
-      </div>
-    );
-  }
-}
+    // This point will only be reached if there is an immediate error when
+    // confirming the payment. Otherwise, your customer will be redirected to
+    // your `return_url`. For some payment methods like iDEAL, your customer will
+    // be redirected to an intermediate site first to authorize the payment, then
+    // redirected to the `return_url`.
+    if (error.type === 'card_error' || error.type === 'validation_error') {
+      setMessage(error.message);
+    } else {
+      setMessage('An unexpected error occured.');
+    }
 
-const mapStateToProps = (state) => {
-  return {
-    cart: state.cart,
+    setIsLoading(false);
   };
+
+  return (
+    <form id="payment-form" onSubmit={handleSubmit}>
+      <LinkAuthenticationElement
+        id="link-authentication-element"
+        // Access the email value like so:
+        // onChange={(event) => {
+        //  setEmail(event.value.email);
+        // }}
+        //
+        // Prefill the email field like so:
+        // options={{defaultValues: {email: 'foo@bar.com'}}}
+      />
+      <PaymentElement id="payment-element" />
+      <button disabled={isLoading || !stripe || !elements} id="submit">
+        <span id="button-text">
+          {isLoading ? <div className="spinner" id="spinner"></div> : 'Pay now'}
+        </span>
+      </button>
+      {/* Show any error or success messages */}
+      {message && <div id="payment-message">{message}</div>}
+    </form>
+  );
 };
 
-const mapDispatchToProps = (dispatch, { history }) => {
-  return {
-    loadCart: () => dispatch(),
-  };
-};
-
-export default connect(mapStateToProps, null)(CheckoutForm);
+export default CheckoutForm;

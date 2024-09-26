@@ -1,145 +1,57 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { getCart, emptyCart } from '../store/redux/cart';
-import { CheckoutForm } from './CheckoutForm';
-import './Cart.css';
+import React, { useState } from 'react';
+import useStore from '../store/store.js';
+import Payment from './Payment.js';
+import './EditCart.css';
 
 const EditCart = (props) => {
-  //   constructor(props) {
-  //     super(props);
-  //     this.incrementHandler = this.incrementHandler.bind(this);
-  //     this.decrementHandler = this.decrementHandler.bind(this);
-  //     this.removeHandler = this.removeHandler.bind(this);
-  //     console.log(this.props);
-  //     const thisCart = this.props.cart.map((item) => item.product);
-  //     const thisQuantity = this.props.cart.map((item) => item.quantity);
-  //     this.state = {
-  //       thisCart: thisCart,
-  //       thisQuantity: thisQuantity,
-  //     };
-  //   }
+  const [showCheckout, setShowCheckout] = useState(false);
 
-  //   incrementHandler(productId) {
-  //     let prodIndx = this.state.thisCart.findIndex(
-  //       (item) => item.id === productId
-  //     );
-  //     let newQuantity = this.state.thisQuantity.map((item, index) => {
-  //       if (index === prodIndx) {
-  //         return item + 1;
-  //       }
-  //       return item;
-  //     });
-  //     this.props.addToCart({
-  //       product: this.state.thisCart[prodIndx],
-  //       quantity: this.state.thisQuantity[prodIndx] + 1,
-  //     });
-  //     this.setState({ thisQuantity: newQuantity });
-  //   }
-  //   decrementHandler(productId) {
-  //     let prodIndx = this.state.thisCart.findIndex((item) => {
-  //       return item.id === productId;
-  //     });
-  //     let delProd = this.state.thisCart[prodIndx];
-  //     if (this.state.thisQuantity[prodIndx] === 1) {
-  //       let newQuantity = this.state.thisQuantity.filter((item, index) => {
-  //         return index != prodIndx;
-  //       });
-  //       let newCart = this.state.thisCart.filter((item, index) => {
-  //         return index != prodIndx;
-  //       });
-  //       this.props.deleteCart(delProd);
-  //       this.setState({ thisCart: newCart, thisQuantity: newQuantity });
-  //     } else {
-  //       let newQuantity = this.state.thisQuantity.map((item, index) => {
-  //         if (index === prodIndx) {
-  //           item -= 1;
-  //           return item;
-  //         }
-  //         return item;
-  //       });
-  //       this.props.addToCart({
-  //         product: this.state.thisCart[prodIndx],
-  //         quantity: this.state.thisQuantity[prodIndx] - 1,
-  //       });
-  //       this.setState({ thisQuantity: newQuantity });
-  //     }
-  //   }
+  const cart = useStore((state) => state.cart);
 
-  //   removeHandler(productId) {
-  //     let prodIndx = this.state.thisCart.findIndex((item) => {
-  //       return item.id === productId;
-  //     });
-  //     let delProd = this.state.thisCart[prodIndx];
-  //     let newQuantity = this.state.thisQuantity.filter((item, index) => {
-  //       return index != prodIndx;
-  //     });
-  //     let newCart = this.state.thisCart.filter((item, index) => {
-  //       return index != prodIndx;
-  //     });
-  //     this.props.deleteCart(delProd);
-  //     this.setState({ thisCart: newCart, thisQuantity: newQuantity });
-  //   }
+  const total = cart.reduce(
+    (acc, product) => acc + (product.price / 100) * product.quantity,
+    0
+  );
 
-  //   render() {
-  // const checkOut = (
-  //   <div>
-  //     <Link to="/checkout-form">
-  //       <button
-  //         type="button"
-  //         className="main-cta"
-  //         id="checkout"
-  //         onClick={() =>
-  //           this.props.checkout(this.state.thisCart, this.state.thisQuantity)
-  //         }
-  //       >
-  //         Go To Checkout
-  //       </button>
-  //     </Link>
-  //   </div>
-  // );
-  const cartItems = props.cart;
-  console.log(props);
+  const removeFromCart = useStore((state) => state.removeFromCart);
+  const increment = useStore((state) => state.increment);
+  const decrement = useStore((state) => state.decrement);
+
+  const openCheckout = () => {
+    setShowCheckout(!showCheckout);
+  };
 
   return (
-    <div>
+    <div className="cart">
       <h1>Your Shopping Cart</h1>
       <div>
-        {cartItems !== undefined && cartItems.length > 0 ? (
+        {cart !== undefined && cart.length > 0 ? (
           <div>
-            {/* {checkOut} */}
             <ul className="all-product-view">
-              {cartItems.map((product, index) => {
+              {cart.map((product) => {
                 console.log(product);
-                const { products } = product;
                 return (
-                  <div key={products.id}>
+                  <div key={product.id}>
                     <div>
-                      <div className="single-product-container">
+                      <div className="single-image-container">
                         <img
                           className="cart-product-image"
-                          src={products.imageUrl}
+                          src={product.imageUrl}
                         />
                       </div>
                       <div className="single-product-container">
-                        <h2>{products.name}</h2>
+                        <h2>{product.name}</h2>
                         <p className="cart-short-desc">
-                          {products.shortDescription}
+                          {product.shortDescription}
                         </p>
-                        <h6>${products.price / 100}</h6>
-                        <h6
-                          key={
-                            // product.id + '-' + this.state.thisQuantity[index]
-                            products.id
-                          }
-                        >
-                          Quantity: {product.quantity}
-                        </h6>
+                        <h6>${product.price / 100}</h6>
+                        <h6 key={product.id}>Quantity: {product.quantity}</h6>
                       </div>
 
                       <button
                         className="cart-cta"
                         type="button"
-                        onClick={() => this.incrementHandler(products.id)}
+                        onClick={() => increment(product)}
                       >
                         {' '}
                         +{' '}
@@ -147,14 +59,14 @@ const EditCart = (props) => {
                       <button
                         className="cart-cta"
                         type="button"
-                        onClick={() => this.decrementHandler(products.id)}
+                        onClick={() => decrement(product)}
                       >
                         -
                       </button>
                       <button
                         className="cart-cta"
                         type="button"
-                        onClick={() => this.removeHandler(products.id)}
+                        onClick={() => removeFromCart(product)}
                       >
                         Remove Item
                       </button>
@@ -163,6 +75,11 @@ const EditCart = (props) => {
                 );
               })}
             </ul>
+            <div className="total-amount">Total: ${total}</div>
+            <button className="cart-cta" onClick={openCheckout}>
+              Pay Now
+            </button>
+            {showCheckout && <Payment />}
           </div>
         ) : (
           <h2>Your cart is empty</h2>
@@ -172,14 +89,4 @@ const EditCart = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  products: state.products,
-  cart: state.cart,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  getCart: () => dispatch(getCart()),
-  emptyCart: () => dispatch(emptyCart()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(EditCart);
+export default EditCart;

@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
 import EditCart from './EditCart';
-import { getCart, addToCart, emptyCart } from '../store/redux/cart';
+import useStore from '../store/store';
 
-const NavBar = (props) => {
+const NavBar = () => {
   const [showCart, setShowCart] = useState(false);
   const handleClick = () => {
     setShowCart(!showCart);
   };
+  const cartItems = useStore((state) => state.totalItems);
+  const cart = useStore((state) => state.cart);
 
   return (
     <div>
       <nav>
         <div className="navbar">
           <div className="navLogo">
-            <a href={`/`}>CT</a>
+            <a href={`/`}>Cozy Threads</a>
           </div>
           <nav>
             <ul className="nav-links">
@@ -33,7 +34,7 @@ const NavBar = (props) => {
                     }
                   />
                 </button>
-                {showCart && <EditCart props={props} />}
+                {showCart && <EditCart items={cartItems} cart={cart} />}
               </li>
             </ul>
           </nav>
@@ -43,14 +44,4 @@ const NavBar = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  products: state.products,
-  cart: state.cart,
-});
-const mapDispatchToProps = (dispatch) => ({
-  getCart: () => dispatch(getCart()),
-  emptyCart: () => dispatch(emptyCart()),
-  addToCart: (cartItem) => dispatch(addToCart(cartItem)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(NavBar);
+export default NavBar;

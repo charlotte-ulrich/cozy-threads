@@ -8,7 +8,40 @@ a {
   color: black;
 }
 
+/* Home */
+div .floating-words {
+  padding: 20px;
+  display: flex;
+}
+
+.floating-words {
+  font-size: 20px;
+  animation: animate 20s linear infinite;
+  animation-delay: none;
+  padding: 40px;
+  overflow: hidden;
+  margin-bottom: 0px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-style: italic;
+}
+
+@keyframes animate {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 /* NavBar */
+
+.navLogo {
+  font-style: bold;
+  font-size: 30px;
+}
 
 .navbar {
   display: flex;

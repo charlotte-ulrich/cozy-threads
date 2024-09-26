@@ -1,0 +1,24 @@
+.cart {
+  /* height: 100vh; */
+  width: 300px;
+  background-color: #8c8a87;
+  /* opacity: 40%; */
+  transform: translate(-280px);
+  position: absolute;
+  border-radius: 5px;
+}
+
+.cart-product-image {
+  object-fit: contain;
+  height: 100px;
+  width: 90px;
+}
+
+.cart-cta {
+  background-color: black;
+  color: white;
+  padding: 15px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 5px;
+}

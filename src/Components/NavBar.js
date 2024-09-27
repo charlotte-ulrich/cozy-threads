@@ -7,7 +7,6 @@ const NavBar = (props) => {
   const handleClick = () => {
     setShowCart(!showCart);
   };
-  console.log(props);
   const cartItems = useStore((state) => state.totalItems);
   const cart = useStore((state) => state.cart);
 
@@ -22,9 +21,6 @@ const NavBar = (props) => {
             <ul className="nav-links">
               <li>
                 <a href="/products">Shop All</a>
-              </li>
-              <li>
-                <a href="/best-sellers">Best Sellers</a>
               </li>
               <li>
                 <button onClick={handleClick}>

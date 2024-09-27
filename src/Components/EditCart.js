@@ -21,36 +21,6 @@ const EditCart = (props) => {
     setShowCheckout(!showCheckout);
   };
 
-  // const makePayment = async () => {
-  //   try {
-  //     const stripe = await loadStripe(
-  //       'pk_test_51Q3Pzh2Kreos2QcTrXeugbxwvEcR2wDHV9buB1qbc7ZTEJHWPP551ovhuC0Cwg343ctSIWpdhgRiw2K4eHxv3FEN008GrVpQrd'
-  //     );
-
-  //     const body = {
-  //       products: cart,
-  //     };
-
-  //     const headers = {
-  //       'Content-Type': 'application/json',
-  //     };
-
-  //     const response = await fetch(`localhost:3000/create-checkout-session`, {
-  //       method: 'POST',
-  //       headers: headers,
-  //       body: JSON.stringify(body),
-  //     });
-
-  //     const session = await response.json();
-
-  //     const result = stripe.redirectToCheckout({
-  //       sessionId: session.id,
-  //     });
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
   return (
     <div className="cart">
       <h1>Your Shopping Cart</h1>
@@ -59,7 +29,6 @@ const EditCart = (props) => {
           <div>
             <ul className="all-product-view">
               {cart.map((product) => {
-                console.log(product);
                 return (
                   <div key={product.id}>
                     <div>

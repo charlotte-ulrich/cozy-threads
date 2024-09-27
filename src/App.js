@@ -4,9 +4,8 @@ import NavBar from './Components/NavBar';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Components/Home';
 import AllProducts from './Components/AllProducts';
-import BestSellers from './Components/BestSellers';
 import ConfirmationPage from './Components/ConfirmationPage';
-import { allProducts, bestSellers } from './products';
+import { allProducts } from './products';
 import './App.css';
 
 const App = () => {
@@ -23,8 +22,6 @@ const App = () => {
     });
   }, []);
 
-  console.log('p', stripePromise);
-
   return (
     <div>
       <NavBar stripePromise={stripePromise} />
@@ -40,11 +37,6 @@ const App = () => {
                 products={allProducts}
               />
             }
-          />
-          <Route
-            exact
-            path="/best-sellers"
-            element={<BestSellers products={bestSellers} />}
           />
           <Route
             path="/completion"

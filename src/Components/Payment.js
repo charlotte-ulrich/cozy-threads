@@ -9,11 +9,13 @@ function Payment(props) {
     process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY
   );
 
+  const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
+
   const [clientSecret, setClientSecret] = useState('');
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
-    fetch('http://localhost:3001/api/create-payment-intent', {
+    fetch(`${API_ENDPOINT}/api/create-payment-intent`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

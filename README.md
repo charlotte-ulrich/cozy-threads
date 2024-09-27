@@ -2,7 +2,7 @@
 
 Cozy Threads is your source for the highest quality cashmere apparel and home goods, integrated with the Stripe payment API.\
 \
-Check us out at https://nebula-bakery.herokuapp.com/ \
+Check us out at https://cozy-threads-sigma.vercel.app/ \
 \
 By:\
  Charlotte Ulrich - https://www.linkedin.com/in/charlotteulrich/

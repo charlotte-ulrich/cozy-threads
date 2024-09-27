@@ -1,14 +1,12 @@
 const express = require('express');
 const app = express();
-const stripe = require('stripe')(process.env.REACT_APP_STRIPE_SECRET, {
-  apiVersion: '2023-10-16',
-  appInfo: {
-    // For sample support and debugging, not required for production:
-    name: 'stripe-samples/accept-a-payment/payment-element',
-    version: '0.0.2',
-    url: 'https://github.com/stripe-samples',
-  },
-});
+const cors = require('cors');
+
+app.use(cors());
+app.use(express.json());
+const stripe = require('stripe')(
+  'sk_test_51Q3Pzh2Kreos2QcTvaaswHvpuGdznCXhUaY3GtOlq31M5zsEfYyeIGcRxLPh0AZMe98twN8fZJtHxnrpW8zjbQJ800vR1rDmOs'
+);
 
 app.get('/config', (req, res) => {
   res.send({
@@ -16,19 +14,20 @@ app.get('/config', (req, res) => {
   });
 });
 
-app.post('/create-payment-intent', async (req, res) => {
-  try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: 1099, // Amount in cents
-      currency: 'usd',
-      automatic_payment_methods: {
-        enabled: true,
-      },
-    });
-    res.send({ clientSecret: paymentIntent.client_secret });
-  } catch (e) {
-    res.status(500).send({ error: e.message });
-  }
+app.post('/api/create-payment-intent', async (req, res) => {
+  const model = req.body;
+
+  const payment = await stripe.paymentIntents.create({
+    amount: model.amount,
+    currency: 'usd',
+    automatic_payment_methods: {
+      enabled: true,
+    },
+  });
+
+  res.send({
+    clientSecret: payment.client_secret,
+  });
 });
 
 app.listen(3001, () =>

@@ -17,7 +17,7 @@ const EditCart = (props) => {
   const increment = useStore((state) => state.increment);
   const decrement = useStore((state) => state.decrement);
 
-  const openCheckout = () => {
+  const openCheckout = async () => {
     setShowCheckout(!showCheckout);
   };
 
@@ -109,7 +109,9 @@ const EditCart = (props) => {
             <button className="cart-cta" onClick={openCheckout}>
               Pay Now
             </button>
-            {showCheckout && <Payment stripePromise={props.stripePromise} />}
+            {showCheckout && (
+              <Payment stripePromise={props.stripePromise} total={total} />
+            )}
           </div>
         ) : (
           <h2>Your cart is empty</h2>

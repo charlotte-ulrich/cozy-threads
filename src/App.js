@@ -16,13 +16,14 @@ const App = () => {
     fetch('/api/config').then(async (r) => {
       try {
         const publishableKey = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
-        // const { publishableKey } = await r.json();
         setStripePromise(loadStripe(publishableKey));
       } catch (error) {
         console.log(error);
       }
     });
   }, []);
+
+  console.log('p', stripePromise);
 
   return (
     <div>

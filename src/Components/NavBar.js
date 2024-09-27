@@ -7,6 +7,7 @@ const NavBar = (props) => {
   const handleClick = () => {
     setShowCart(!showCart);
   };
+  console.log(props);
   const cartItems = useStore((state) => state.totalItems);
   const cart = useStore((state) => state.cart);
 

@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Components/Home';
 import AllProducts from './Components/AllProducts';
 import BestSellers from './Components/BestSellers';
-import CheckoutForm from './Components/CheckoutForm';
 import ConfirmationPage from './Components/ConfirmationPage';
 import { allProducts, bestSellers } from './products';
 import './App.css';
@@ -15,29 +14,41 @@ const App = () => {
 
   useEffect(() => {
     fetch('/api/config').then(async (r) => {
-      const { publishableKey } = await r.json();
-      setStripePromise(loadStripe(publishableKey));
+      try {
+        const publishableKey = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
+        // const { publishableKey } = await r.json();
+        setStripePromise(loadStripe(publishableKey));
+      } catch (error) {
+        console.log(error);
+      }
     });
   }, []);
 
   return (
     <div>
-      <NavBar />
+      <NavBar stripePromise={stripePromise} />
       <Router>
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route
             exact
             path="/products"
-            element={<AllProducts products={allProducts} />}
+            element={
+              <AllProducts
+                stripePromise={stripePromise}
+                products={allProducts}
+              />
+            }
           />
           <Route
             exact
             path="/best-sellers"
             element={<BestSellers products={bestSellers} />}
           />
-          <Route path="/checkout-form" element={CheckoutForm} />
-          <Route path="/confirmation-page" element={ConfirmationPage} />
+          <Route
+            path="/completion"
+            element={<ConfirmationPage stripePromise={stripePromise} />}
+          />
         </Routes>
       </Router>
     </div>

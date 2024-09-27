@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import EditCart from './EditCart';
 import useStore from '../store/store';
 
-const NavBar = () => {
+const NavBar = (props) => {
   const [showCart, setShowCart] = useState(false);
   const handleClick = () => {
     setShowCart(!showCart);
@@ -34,7 +34,13 @@ const NavBar = () => {
                     }
                   />
                 </button>
-                {showCart && <EditCart items={cartItems} cart={cart} />}
+                {showCart && (
+                  <EditCart
+                    stripePromise={props.stripePromise}
+                    items={cartItems}
+                    cart={cart}
+                  />
+                )}
               </li>
             </ul>
           </nav>

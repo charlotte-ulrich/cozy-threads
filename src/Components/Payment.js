@@ -10,12 +10,14 @@ function Payment(props) {
   );
 
   const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
+  // If developing locally, use this value in your api call
+  //  fetch(`${API_ENDPOINT}/api/create-payment-intent` ...
 
   const [clientSecret, setClientSecret] = useState('');
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
-    fetch(`${API_ENDPOINT}/api/create-payment-intent`, {
+    fetch(`/api/create-payment-intent`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

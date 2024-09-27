@@ -17,7 +17,7 @@ function Payment(props) {
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
-    fetch(`/api/create-payment-intent`, {
+    fetch(`${API_ENDPOINT}/api/create-payment-intent`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
